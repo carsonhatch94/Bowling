@@ -1033,3 +1033,4 @@ C:\Users\chatch94\Repos\Bowling\obj\Debug\net8.0\Bowling.dll
 C:\Users\chatch94\Repos\Bowling\obj\Debug\net8.0\refint\Bowling.dll
 C:\Users\chatch94\Repos\Bowling\obj\Debug\net8.0\Bowling.pdb
 C:\Users\chatch94\Repos\Bowling\obj\Debug\net8.0\ref\Bowling.dll
+C:\Users\chatch94\Repos\Bowling\obj\Debug\net8.0\Bowling.sourcelink.json

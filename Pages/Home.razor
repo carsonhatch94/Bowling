@@ -1,7 +1,154 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Bowling</PageTitle>
+<style>
+    .score-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
 
-<h1>Hello, world!</h1>
+    .score-square {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 10px;
+        font-size: 24px;
+        padding-top: 10px;
+    }
+
+    .frame {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .roll-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .roll-1-score, .roll-2-score {
+        margin: 5px;
+    }
+
+    .score-number {
+        font-size: 48px;
+    }
+
+    button {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+<h1>Welcome to Bill's Bowling Lane</h1>
 
 Welcome to your new app.
+
+<div class="score-container">
+    <div class="frame">
+        <div class="score-number">1</div>
+        <div class="score-square">
+            <div class="roll-container">
+                <div class="roll-1-score">@((frameCount == 1) ? firstRoll.ToString() : rolls.ElementAtOrDefault(0).ToString())</div>
+                <div class="roll-2-score">@((frameCount == 1) ? secondRoll.ToString() : rolls.ElementAtOrDefault(1).ToString())</div>
+            </div>
+            <div class="frame-1-score">@((frameCount != 1) ? (rolls.ElementAtOrDefault(0) + rolls.ElementAtOrDefault(1)).ToString() : "")</div>
+        </div>
+    </div>
+
+    <div class="frame">
+        <div class="score-number">2</div>
+        <div class="score-square">
+            <div class="roll-container">
+                <div class="roll-1-score">@((frameCount == 2) ? firstRoll.ToString() : rolls.ElementAtOrDefault(2).ToString())</div>
+                <div class="roll-2-score">@((frameCount == 2) ? secondRoll.ToString() : rolls.ElementAtOrDefault(3).ToString())</div>
+            </div>
+            <div class="frame-2-score">@((frameCount != 2) ? (rolls.ElementAtOrDefault(2) + rolls.ElementAtOrDefault(3)).ToString() : "")</div>
+        </div>
+    </div>
+
+    <div class="frame">
+        <div class="score-number">3</div>
+        <div class="score-square">
+            <div class="roll-container">
+                <div class="roll-1-score">@((frameCount == 3) ? firstRoll.ToString() : rolls.ElementAtOrDefault(4).ToString())</div>
+                <div class="roll-2-score">@((frameCount == 3) ? secondRoll.ToString() : rolls.ElementAtOrDefault(5).ToString())</div>
+            </div>
+            <div class="frame-3-score">@((frameCount != 3) ? (rolls.ElementAtOrDefault(4) + rolls.ElementAtOrDefault(5)).ToString() : "")</div>
+        </div>
+    </div>
+
+    <div class="frame">
+        <div class="score-number">Total</div>
+        <div class="score-square">
+            <div class="total">@total</div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <p>Frame @frameCount</p>
+    <p>Roll @rollCount</p>
+</div>
+
+<div class="score-button-container">
+    <div class="top-row">
+        <button class="one" @onclick="() => Roll(1)">1</button>
+        <button class="two" @onclick="() => Roll(2)">2</button>
+        <button class="three" @onclick="() => Roll(3)">3</button>
+    </div>
+    <div class="middle-row">
+        <button class="four" @onclick="() => Roll(4)">4</button>
+        <button class="five" @onclick="() => Roll(5)">5</button>
+        <button class="six" @onclick="() => Roll(6)">6</button>
+    </div>
+    <div class="middle-row-2">
+        <button class="seven" @onclick="() => Roll(7)">7</button>
+        <button class="eight" @onclick="() => Roll(8)">8</button>
+        <button class="nine" @onclick="() => Roll(9)">9</button>
+    </div>
+    <div class="bottom-row">
+        <button class="seven" @onclick="() => Roll(0)">0</button>
+        @* spare will need to change *@
+        <button class="eight" @onclick="() => Roll(0)">/</button>
+        <button class="nine" @onclick="() => Roll(10)">X</button>
+    </div>
+</div>
+
+@code {
+    List<int> rolls = new List<int>();
+    List<int> frameScores = new List<int>();
+    int firstRoll = 0;
+    int secondRoll = 0;
+    int total = 0;
+    int frameCount = 1;
+    int rollCount = 1;
+
+    void Roll(int roll)
+    {
+        if (rollCount == 1)
+        {
+            firstRoll = roll;
+            rolls.Add(roll);
+            rollCount = 2;
+        }
+        else if (rollCount == 2)
+        {
+            secondRoll = roll;
+            rolls.Add(roll);
+            //total += f1r1 + f1r2;
+            frameCount++;
+            rollCount = 1;
+            firstRoll = 0;
+            secondRoll = 0;
+        }
+    }
+
+}
