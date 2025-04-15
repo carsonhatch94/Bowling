@@ -3,8 +3,8 @@
     public class Frame
     {
         public int FrameNumber { get; set; }
-        public int FirstRoll { get; set; }
-        public int SecondRoll { get; set; }
+        public int FirstRoll { get; set; } = -1;
+        public int SecondRoll { get; set; } = -1;
         public int FirstBonus { get; set; } = -1;
         public int SecondBonus { get; set; } = -1;
         public bool IsStrike { get; set; }

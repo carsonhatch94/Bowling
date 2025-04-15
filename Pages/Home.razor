@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Bowling.Components
 
 <PageTitle>Bowling</PageTitle>
 <style>
@@ -45,45 +46,24 @@
         width: 50px;
         height: 50px;
     }
+
+    .strike {
+        width: 100px;
+        height: 50px;
+    }
 </style>
 
-<h1>Welcome to Bill's Bowling Lane</h1>
+<h1>Welcome to Carson's Bowling Center</h1>
 
 Welcome to your new app.
 
 <div class="score-container">
-@*     <div class="frame">
-        <div class="score-number">1</div>
-        <div class="score-square">
-            <div class="roll-container">
-                <div class="roll-1-score">@((activeFrame == 1) ? firstRoll.ToString() : rolls.ElementAtOrDefault(0).ToString())</div>
-                <div class="roll-2-score">@((activeFrame == 1) ? secondRoll.ToString() : rolls.ElementAtOrDefault(1).ToString())</div>
-            </div>
-            <div class="frame-1-score">@((activeFrame != 1) ? (rolls.ElementAtOrDefault(0) + rolls.ElementAtOrDefault(1)).ToString() : "")</div>
-        </div>
-    </div>
-
-    <div class="frame">
-        <div class="score-number">2</div>
-        <div class="score-square">
-            <div class="roll-container">
-                <div class="roll-1-score">@((activeFrame == 2) ? firstRoll.ToString() : rolls.ElementAtOrDefault(2).ToString())</div>
-                <div class="roll-2-score">@((activeFrame == 2) ? secondRoll.ToString() : rolls.ElementAtOrDefault(3).ToString())</div>
-            </div>
-            <div class="frame-2-score">@((activeFrame != 2) ? (rolls.ElementAtOrDefault(2) + rolls.ElementAtOrDefault(3)).ToString() : "")</div>
-        </div>
-    </div>
-
-    <div class="frame">
-        <div class="score-number">3</div>
-        <div class="score-square">
-            <div class="roll-container">
-                <div class="roll-1-score">@((activeFrame == 3) ? firstRoll.ToString() : rolls.ElementAtOrDefault(4).ToString())</div>
-                <div class="roll-2-score">@((activeFrame == 3) ? secondRoll.ToString() : rolls.ElementAtOrDefault(5).ToString())</div>
-            </div>
-            <div class="frame-3-score">@((activeFrame != 3) ? (rolls.ElementAtOrDefault(4) + rolls.ElementAtOrDefault(5)).ToString() : "")</div>
-        </div>
-    </div> *@
+    <FrameComponent FrameNumber="1" Frame="scoreCard.Frames[0]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="2" Frame="scoreCard.Frames[1]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="3" Frame="scoreCard.Frames[2]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="4" Frame="scoreCard.Frames[3]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="5" Frame="scoreCard.Frames[4]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="6" Frame="scoreCard.Frames[5]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
 
     <div class="frame">
         <div class="score-number">Total</div>
@@ -100,26 +80,24 @@ Welcome to your new app.
 
 <div class="score-button-container">
     <div class="top-row">
-        <button class="one" @onclick="() => Roll(1)">1</button>
-        <button class="two" @onclick="() => Roll(2)">2</button>
-        <button class="three" @onclick="() => Roll(3)">3</button>
+        <button class="one" @onclick="() => Roll(1)" disabled="@(10 - firstRoll < 1)">1</button>
+        <button class="two" @onclick="() => Roll(2)" disabled="@(10 - firstRoll < 2)">2</button>
+        <button class="three" @onclick="() => Roll(3)" disabled="@(10 - firstRoll < 3)">3</button>
     </div>
     <div class="middle-row">
-        <button class="four" @onclick="() => Roll(4)">4</button>
-        <button class="five" @onclick="() => Roll(5)">5</button>
-        <button class="six" @onclick="() => Roll(6)">6</button>
+        <button class="four" @onclick="() => Roll(4)" disabled="@(10 - firstRoll < 4)">4</button>
+        <button class="five" @onclick="() => Roll(5)" disabled="@(10 - firstRoll < 5)">5</button>
+        <button class="six" @onclick="() => Roll(6)" disabled="@(10 - firstRoll < 6)">6</button>
     </div>
     <div class="middle-row-2">
-        <button class="seven" @onclick="() => Roll(7)">7</button>
+        <button class="seven" @onclick="() => Roll(7)" disabled="@(10 - firstRoll < 7)">7</button>
         <button class="eight" @onclick="() => Roll(8)" disabled="@(10 - firstRoll < 8)">8</button>
         <button class="nine" @onclick="() => Roll(9)" disabled="@(10 - firstRoll < 9)">9</button>
 
     </div>
     <div class="bottom-row">
-        <button class="seven" @onclick="() => Roll(0)">0</button>
-        @* spare will need to change *@
-        <button class="eight" @onclick="() => Roll(0)">/</button>
-        <button class="nine" @onclick="() => Roll(10)">X</button>
+        <button class="zero" @onclick="() => Roll(0)">0</button>
+        <button class="strike" @onclick="() => Roll(10 - firstRoll)">@((rollCount == 1) ? "Strike!" : "Spare!")</button>
     </div>
 </div>
 
@@ -140,20 +118,16 @@ Welcome to your new app.
 
 @code {
     ScoreCard scoreCard = new ScoreCard();
-    int firstRoll = 0;
-    int secondRoll = 0;
     int activeFrame = 1;
+    int firstRoll = 0;
     int rollCount = 1;
+    int runningTotal = 0;
 
     void Roll(int roll)
     {
         Frame currentFrame = scoreCard.Frames.First(f => f.FrameNumber == activeFrame);
         var spareFrames = scoreCard.Frames.Where(f => f.IsSpare);
         var strikeFrames = scoreCard.Frames.Where(f => f.IsStrike);
-        foreach (var frame in spareFrames)
-        {
-            Console.WriteLine($"Frame {frame.FrameNumber} is a spare.");
-        }
         if (spareFrames.Any())
         {
             spareFrames.First().FirstBonus = roll;
@@ -189,6 +163,7 @@ Welcome to your new app.
 
     void HandleFirstRoll(Frame currentFrame, int roll)
     {
+        firstRoll = roll;
         currentFrame.FirstRoll = roll;
         scoreCard.Rolls.Add(roll);
         if (roll == 10)
@@ -220,5 +195,17 @@ Welcome to your new app.
 
         activeFrame++;
         rollCount = 1;
+        firstRoll = 0;
+    }
+
+    int GetRunningTotal(int frame)
+    {
+        int runningTotal = 0;
+        for (int i = 0; i < frame; i++)
+        {
+            runningTotal += scoreCard.FrameScores[i];
+        }
+        
+        return runningTotal;
     }
 }

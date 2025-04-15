@@ -1,0 +1,24 @@
+﻿@code {
+    [Parameter]
+    public int FrameNumber { get; set; }
+
+    [Parameter]
+    public Frame Frame { get; set; }
+
+    [Parameter]
+    public int ActiveFrame { get; set; }
+
+    [Parameter]
+    public Func<int, int> GetRunningTotal { get; set; }
+}
+
+<div class="frame">
+    <div class="score-number">@FrameNumber</div>
+    <div class="score-square">
+        <div class="roll-container">
+            <div class="roll-1-score">@((Frame.FirstRoll == -1) ? "" : Frame.FirstRoll.ToString())</div>
+            <div class="roll-2-score">@((Frame.SecondRoll == -1) ? "" : Frame.SecondRoll.ToString())</div>
+        </div>
+        <div class="frame-@FrameNumber-score">@((ActiveFrame >= FrameNumber + 1) ? GetRunningTotal(FrameNumber) : "")</div>
+    </div>
+</div>
