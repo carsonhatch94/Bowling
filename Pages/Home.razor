@@ -93,22 +93,23 @@ Let's Roll!
         <p>Frame @activeFrame</p>
         <p>Roll @rollCount</p>
     </div>
-
+    //TODO: Add a reset button
+    //TODO: See if I can make a button component
     <div class="score-button-container">
         <div class="top-row">
-            <button class="one" @onclick="() => Roll(1)">1</button>
-            <button class="two" @onclick="() => Roll(2)">2</button>
-            <button class="three" @onclick="() => Roll(3)">3</button>
+            <button class="one" @onclick="() => Roll(1)" disabled="@DisableButton(firstRoll, 1)">1</button>
+            <button class="two" @onclick="() => Roll(2)" disabled="@DisableButton(firstRoll, 2)">2</button>
+            <button class="three" @onclick="() => Roll(3)" disabled="@DisableButton(firstRoll, 3)">3</button>
         </div>
         <div class="middle-row">
-            <button class="four" @onclick="() => Roll(4)">4</button>
-            <button class="five" @onclick="() => Roll(5)">5</button>
-            <button class="six" @onclick="() => Roll(6)">6</button>
+            <button class="four" @onclick="() => Roll(4)" disabled="@DisableButton(firstRoll, 4)">4</button>
+            <button class="five" @onclick="() => Roll(5)" disabled="@DisableButton(firstRoll, 5)">5</button>
+            <button class="six" @onclick="() => Roll(6)" disabled="@DisableButton(firstRoll, 6)">6</button>
         </div>
         <div class="middle-row-2">
-            <button class="seven" @onclick="() => Roll(7)">7</button>
-            <button class="eight" @onclick="() => Roll(8)">8</button>
-            <button class="nine" @onclick="() => Roll(9)">9</button>
+            <button class="seven" @onclick="() => Roll(7)" disabled="@DisableButton(firstRoll, 7)">7</button>
+            <button class="eight" @onclick="() => Roll(8)" disabled="@DisableButton(firstRoll, 8)">8</button>
+            <button class="nine" @onclick="() => Roll(9)" disabled="@DisableButton(firstRoll, 9)">9</button>
         </div>
         <div class="bottom-row">
             <button class="zero" @onclick="() => Roll(0)">0</button>
@@ -117,22 +118,26 @@ Let's Roll!
     </div>
 }
 
-<div>
-    <h2>All Rolls:</h2>
-    <ul>
-        @foreach (var roll in scoreCard.Rolls)
-        {
-            <li>@roll</li>
-        }
-    </ul>
-</div>
-
 @code {
     ScoreCard scoreCard = new ScoreCard();
     int activeFrame = 1;
     int firstRoll = 0;
     int rollCount = 1;
     int runningTotal = 0;
+    //TODO: Possibly move these somewhere else? See if I can integrate FrameTenRoll into regular roll method
+
+    bool DisableButton(int firstRoll, int buttonValue)
+    {
+        if (activeFrame == 10)
+        {
+            if (rollCount != 3)
+            {
+                return 10 - scoreCard.Frames[9].FirstRoll < buttonValue;
+            }
+        }
+
+        return 10 - firstRoll < buttonValue;
+    }
 
     void FrameTenRoll(int roll)
     {
