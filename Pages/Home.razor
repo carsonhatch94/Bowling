@@ -107,25 +107,24 @@ Let's Roll!
         <p>Frame @activeFrame</p>
         <p>Roll @rollCount</p>
     </div>
-    //TODO: See if I can make a button component
     <div class="score-button-container">
         <div class="top-row">
-            <button class="one" @onclick="() => Roll(1)" disabled="@DisableButton(firstRoll, 1)">1</button>
-            <button class="two" @onclick="() => Roll(2)" disabled="@DisableButton(firstRoll, 2)">2</button>
-            <button class="three" @onclick="() => Roll(3)" disabled="@DisableButton(firstRoll, 3)">3</button>
+            <ScoreButtonComponent Value="1" OnClick="Roll" Disabled="@DisableButton(firstRoll, 1)" CssClass="one" />
+            <ScoreButtonComponent Value="2" OnClick="Roll" Disabled="@DisableButton(firstRoll, 2)" CssClass="two" />
+            <ScoreButtonComponent Value="3" OnClick="Roll" Disabled="@DisableButton(firstRoll, 3)" CssClass="three" />
         </div>
         <div class="middle-row">
-            <button class="four" @onclick="() => Roll(4)" disabled="@DisableButton(firstRoll, 4)">4</button>
-            <button class="five" @onclick="() => Roll(5)" disabled="@DisableButton(firstRoll, 5)">5</button>
-            <button class="six" @onclick="() => Roll(6)" disabled="@DisableButton(firstRoll, 6)">6</button>
+            <ScoreButtonComponent Value="4" OnClick="Roll" Disabled="@DisableButton(firstRoll, 4)" CssClass="four" />
+            <ScoreButtonComponent Value="5" OnClick="Roll" Disabled="@DisableButton(firstRoll, 5)" CssClass="five" />
+            <ScoreButtonComponent Value="6" OnClick="Roll" Disabled="@DisableButton(firstRoll, 6)" CssClass="six" />
         </div>
         <div class="middle-row-2">
-            <button class="seven" @onclick="() => Roll(7)" disabled="@DisableButton(firstRoll, 7)">7</button>
-            <button class="eight" @onclick="() => Roll(8)" disabled="@DisableButton(firstRoll, 8)">8</button>
-            <button class="nine" @onclick="() => Roll(9)" disabled="@DisableButton(firstRoll, 9)">9</button>
+            <ScoreButtonComponent Value="7" OnClick="Roll" Disabled="@DisableButton(firstRoll, 7)" CssClass="seven" />
+            <ScoreButtonComponent Value="8" OnClick="Roll" Disabled="@DisableButton(firstRoll, 8)" CssClass="eight" />
+            <ScoreButtonComponent Value="9" OnClick="Roll" Disabled="@DisableButton(firstRoll, 9)" CssClass="nine" />
         </div>
         <div class="bottom-row">
-            <button class="zero" @onclick="() => Roll(0)">0</button>
+            <ScoreButtonComponent Value="0" OnClick="Roll" CssClass="zero" />
             <button class="strike" @onclick="() => Roll(10 - firstRoll)">@((rollCount == 1) ? "Strike!" : "Spare!")</button>
         </div>
     </div>
