@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Bowling",
   "resources": {
-    "hash": "sha256-ttUH9fibNHToEkxZFEuAVTKEjPHk/ZmzTaQGIsC3PtI=",
+    "hash": "sha256-bBvcb66/opeBcEzVUN8lg20Jz2iEIQYlsr+OmDhbd9k=",
     "jsModuleNative": {
       "dotnet.native.8.0.6.45pwaaezm4.js": "sha256-YU6M9+jtDVnB8/wtrgIndOstzNh778Ls8g9XnbjorSk="
     },
@@ -208,10 +208,10 @@
       "mscorlib.wasm": "sha256-masKveCdoRSahF99doEQk7H3YN2wHLVIE4M/Zu8OoD8=",
       "netstandard.wasm": "sha256-z1EJOmgVhSpTopn7Tek/0P//MKGF1I3NUD/sh4oLnwY=",
       "System.Private.CoreLib.wasm": "sha256-tuIWpR30u0OoEVtv4pXZ47mEpI2AmFBIyYFPnqDZZfw=",
-      "Bowling.wasm": "sha256-PgLwyf1JHgTlFkPduKlTahtY9yCz5PqNzNSkZTiDuAI="
+      "Bowling.wasm": "sha256-gWdc7fjOtTkZB90KmJruOXoXmd5aysbbvwTZHjo6CDc="
     },
     "pdb": {
-      "Bowling.pdb": "sha256-UHXlrUVL+lu2jgd8RNXTa+5b1tzIVNeuRaiiTXubhFY="
+      "Bowling.pdb": "sha256-zR3scZB4SKoyVNEeL+KdO0NxZSFdjROY0BRTfceMhEQ="
     }
   },
   "cacheBootResources": true,

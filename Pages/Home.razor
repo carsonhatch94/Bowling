@@ -55,7 +55,7 @@
 
 <h1>Welcome to Carson's Bowling Center</h1>
 
-Welcome to your new app.
+Let's Roll!
 
 <div class="score-container">
     <FrameComponent FrameNumber="1" Frame="scoreCard.Frames[0]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
@@ -64,6 +64,9 @@ Welcome to your new app.
     <FrameComponent FrameNumber="4" Frame="scoreCard.Frames[3]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
     <FrameComponent FrameNumber="5" Frame="scoreCard.Frames[4]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
     <FrameComponent FrameNumber="6" Frame="scoreCard.Frames[5]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="7" Frame="scoreCard.Frames[6]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="8" Frame="scoreCard.Frames[7]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+    <FrameComponent FrameNumber="9" Frame="scoreCard.Frames[8]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
 
     <div class="frame">
         <div class="score-number">Total</div>
@@ -101,21 +104,6 @@ Welcome to your new app.
     </div>
 </div>
 
-<div>
-    @foreach (var frameScore in scoreCard.FrameScores)
-    {
-        <p>Frame Score: @frameScore</p>
-    }
-</div>
-<div>
-    @foreach (var roll in scoreCard.Rolls)
-    {
-        <ul>
-            <li>@roll</li>
-        </ul>
-    }
-</div>
-
 @code {
     ScoreCard scoreCard = new ScoreCard();
     int activeFrame = 1;
@@ -130,24 +118,13 @@ Welcome to your new app.
         var strikeFrames = scoreCard.Frames.Where(f => f.IsStrike);
         if (spareFrames.Any())
         {
-            spareFrames.First().FirstBonus = roll;
-            scoreCard.FrameScores[spareFrames.First().FrameNumber - 1] += roll;
-            spareFrames.First().IsSpare = false;
+            AwardSpareBonus(spareFrames.First(), roll);
         }
         if (strikeFrames.Any())
         {
             foreach(var frame in strikeFrames)
             {
-                if (frame.FirstBonus != -1 && frame.SecondBonus == -1)
-                {
-                    frame.SecondBonus = roll;
-                    scoreCard.FrameScores[frame.FrameNumber - 1] += (frame.FirstBonus + frame.SecondBonus);
-                    frame.IsStrike = false;
-                }
-                if (frame.FirstBonus == -1)
-                {
-                    frame.FirstBonus = roll;
-                }
+                AwardStrikeBonus(frame, roll);
             }
         }
         if (rollCount == 1)
@@ -172,6 +149,7 @@ Welcome to your new app.
             scoreCard.FrameScores[activeFrame - 1] = 10;
             activeFrame++;
             rollCount = 1;
+            firstRoll = 0;
             return;
         }
         rollCount = 2;
@@ -196,6 +174,27 @@ Welcome to your new app.
         activeFrame++;
         rollCount = 1;
         firstRoll = 0;
+    }
+
+    void AwardSpareBonus(Frame spareFrame, int roll)
+    {
+        spareFrame.FirstBonus = roll;
+        scoreCard.FrameScores[spareFrame.FrameNumber - 1] += roll;
+        spareFrame.IsSpare = false;
+    }
+
+    void AwardStrikeBonus(Frame frame, int roll)
+    {
+        if (frame.FirstBonus != -1 && frame.SecondBonus == -1)
+        {
+            frame.SecondBonus = roll;
+            scoreCard.FrameScores[frame.FrameNumber - 1] += (frame.FirstBonus + frame.SecondBonus);
+            frame.IsStrike = false;
+        }
+        if (frame.FirstBonus == -1)
+        {
+            frame.FirstBonus = roll;
+        }
     }
 
     int GetRunningTotal(int frame)
