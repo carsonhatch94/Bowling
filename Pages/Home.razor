@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Bowling.Components
+@inject NavigationManager NavigationManager
 
 <PageTitle>Bowling</PageTitle>
 <style>
@@ -47,13 +48,26 @@
         height: 50px;
     }
 
-    .strike {
-        width: 104px;
+    .reset {
+        width: 100px;
         height: 50px;
+    }
+
+    .strike {
+        width: 104.5px;
+        height: 50px;
+    }
+
+    .title {
+        display: flex;
+        justify-content: space-between;
     }
 </style>
 
-<h1>Welcome to Carson's Bowling Center</h1>
+<div class="title">
+    <h1>Welcome to Carson's Bowling Center</h1>
+    <button class="reset" @onclick="RefreshPage">Reset</button>
+</div>
 
 Let's Roll!
 
@@ -93,7 +107,6 @@ Let's Roll!
         <p>Frame @activeFrame</p>
         <p>Roll @rollCount</p>
     </div>
-    //TODO: Add a reset button
     //TODO: See if I can make a button component
     <div class="score-button-container">
         <div class="top-row">
@@ -125,6 +138,11 @@ Let's Roll!
     int rollCount = 1;
     int runningTotal = 0;
     //TODO: Possibly move these somewhere else? See if I can integrate FrameTenRoll into regular roll method
+
+    void RefreshPage()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
 
     bool DisableButton(int firstRoll, int buttonValue)
     {
