@@ -34,7 +34,7 @@
         justify-content: center;
     }
 
-    .roll-1-score, .roll-2-score {
+    .roll-1-score, .roll-2-score, .roll-3-score {
         margin: 5px;
     }
 
@@ -48,7 +48,7 @@
     }
 
     .strike {
-        width: 100px;
+        width: 104px;
         height: 50px;
     }
 </style>
@@ -67,7 +67,18 @@ Let's Roll!
     <FrameComponent FrameNumber="7" Frame="scoreCard.Frames[6]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
     <FrameComponent FrameNumber="8" Frame="scoreCard.Frames[7]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
     <FrameComponent FrameNumber="9" Frame="scoreCard.Frames[8]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
-    <FrameComponent FrameNumber="10" Frame="scoreCard.Frames[9]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
+
+    <div class="frame">
+        <div class="score-number">10</div>
+        <div class="score-square">
+            <div class="roll-container">
+                <div class="roll-1-score">@((scoreCard.Frames[9].FirstRoll == -1) ? "" : scoreCard.Frames[9].FirstRoll.ToString())</div>
+                <div class="roll-2-score">@((scoreCard.Frames[9].SecondRoll == -1) ? "" : scoreCard.Frames[9].SecondRoll.ToString())</div>
+                <div class="roll-3-score">@((scoreCard.Frames[9].ThirdRoll == -1) ? "" : scoreCard.Frames[9].ThirdRoll.ToString())</div>
+            </div>
+            <div class="frame-10-score">@((scoreCard.GameOver) ? scoreCard.TotalScore : "")</div>
+        </div>
+    </div>
 
     <div class="frame">
         <div class="score-number">Total</div>
@@ -76,33 +87,44 @@ Let's Roll!
         </div>
     </div>
 </div>
+@if (!scoreCard.GameOver)
+{
+    <div>
+        <p>Frame @activeFrame</p>
+        <p>Roll @rollCount</p>
+    </div>
+
+    <div class="score-button-container">
+        <div class="top-row">
+            <button class="one" @onclick="() => Roll(1)">1</button>
+            <button class="two" @onclick="() => Roll(2)">2</button>
+            <button class="three" @onclick="() => Roll(3)">3</button>
+        </div>
+        <div class="middle-row">
+            <button class="four" @onclick="() => Roll(4)">4</button>
+            <button class="five" @onclick="() => Roll(5)">5</button>
+            <button class="six" @onclick="() => Roll(6)">6</button>
+        </div>
+        <div class="middle-row-2">
+            <button class="seven" @onclick="() => Roll(7)">7</button>
+            <button class="eight" @onclick="() => Roll(8)">8</button>
+            <button class="nine" @onclick="() => Roll(9)">9</button>
+        </div>
+        <div class="bottom-row">
+            <button class="zero" @onclick="() => Roll(0)">0</button>
+            <button class="strike" @onclick="() => Roll(10 - firstRoll)">@((rollCount == 1) ? "Strike!" : "Spare!")</button>
+        </div>
+    </div>
+}
 
 <div>
-    <p>Frame @activeFrame</p>
-    <p>Roll @rollCount</p>
-</div>
-
-<div class="score-button-container">
-    <div class="top-row">
-        <button class="one" @onclick="() => Roll(1)" disabled="@(10 - firstRoll < 1)">1</button>
-        <button class="two" @onclick="() => Roll(2)" disabled="@(10 - firstRoll < 2)">2</button>
-        <button class="three" @onclick="() => Roll(3)" disabled="@(10 - firstRoll < 3)">3</button>
-    </div>
-    <div class="middle-row">
-        <button class="four" @onclick="() => Roll(4)" disabled="@(10 - firstRoll < 4)">4</button>
-        <button class="five" @onclick="() => Roll(5)" disabled="@(10 - firstRoll < 5)">5</button>
-        <button class="six" @onclick="() => Roll(6)" disabled="@(10 - firstRoll < 6)">6</button>
-    </div>
-    <div class="middle-row-2">
-        <button class="seven" @onclick="() => Roll(7)" disabled="@(10 - firstRoll < 7)">7</button>
-        <button class="eight" @onclick="() => Roll(8)" disabled="@(10 - firstRoll < 8)">8</button>
-        <button class="nine" @onclick="() => Roll(9)" disabled="@(10 - firstRoll < 9)">9</button>
-
-    </div>
-    <div class="bottom-row">
-        <button class="zero" @onclick="() => Roll(0)">0</button>
-        <button class="strike" @onclick="() => Roll(10 - firstRoll)">@((rollCount == 1) ? "Strike!" : "Spare!")</button>
-    </div>
+    <h2>All Rolls:</h2>
+    <ul>
+        @foreach (var roll in scoreCard.Rolls)
+        {
+            <li>@roll</li>
+        }
+    </ul>
 </div>
 
 @code {
@@ -112,21 +134,67 @@ Let's Roll!
     int rollCount = 1;
     int runningTotal = 0;
 
+    void FrameTenRoll(int roll)
+    {
+        Frame currentFrame = scoreCard.Frames.First(f => f.FrameNumber == activeFrame);
+        if (rollCount == 1)
+        {
+            firstRoll = roll;
+            currentFrame.FirstRoll = roll;
+            scoreCard.Rolls.Add(roll);
+            if (roll == 10)
+            {
+                scoreCard.FrameScores[9] = 10;
+            }
+        }
+        else if (rollCount == 2)
+        {
+            currentFrame.SecondRoll = roll;
+            scoreCard.Rolls.Add(roll);
+
+            int frameScore = currentFrame.FirstRoll + currentFrame.SecondRoll;
+            scoreCard.FrameScores[9] = frameScore;
+
+            if (frameScore < 10)
+            {
+                scoreCard.GameOver = true;
+            }
+            else if (frameScore == 10)
+            {
+                scoreCard.FrameScores[9] = 10;
+            }
+            else if (frameScore == 20)
+            {
+                scoreCard.FrameScores[9] = 20;
+            }
+
+        }
+        else if (rollCount == 3)
+        {
+            currentFrame.ThirdRoll = roll;
+            scoreCard.Rolls.Add(roll);
+            scoreCard.FrameScores[9] += currentFrame.ThirdRoll;
+            scoreCard.GameOver = true;
+        }
+
+        if (scoreCard.GameOver)
+        {
+            scoreCard.UpdateTotalScore();
+        }
+        rollCount++;
+
+    }
+
     void Roll(int roll)
     {
         Frame currentFrame = scoreCard.Frames.First(f => f.FrameNumber == activeFrame);
-        var spareFrames = scoreCard.Frames.Where(f => f.IsSpare);
-        var strikeFrames = scoreCard.Frames.Where(f => f.IsStrike);
-        if (spareFrames.Any())
+        AwardBonuses(roll);
+
+        if (activeFrame == 10)
         {
-            AwardSpareBonus(spareFrames.First(), roll);
-        }
-        if (strikeFrames.Any())
-        {
-            foreach(var frame in strikeFrames)
-            {
-                AwardStrikeBonus(frame, roll);
-            }
+            FrameTenRoll(roll);
+            firstRoll = 0;
+            return;
         }
         if (rollCount == 1)
         {
@@ -139,11 +207,28 @@ Let's Roll!
         scoreCard.UpdateTotalScore();
     }
 
+    void AwardBonuses(int roll)
+    {
+        var spareFrames = scoreCard.Frames.Where(f => f.IsSpare);
+        var strikeFrames = scoreCard.Frames.Where(f => f.IsStrike);
+
+        if (spareFrames.Any())
+        {
+            AwardSpareBonus(spareFrames.First(), roll);
+        }
+
+        foreach (var frame in strikeFrames)
+        {
+            AwardStrikeBonus(frame, roll);
+        }
+    }
+
     void HandleFirstRoll(Frame currentFrame, int roll)
     {
         firstRoll = roll;
         currentFrame.FirstRoll = roll;
         scoreCard.Rolls.Add(roll);
+
         if (roll == 10)
         {
             currentFrame.IsStrike = true;
@@ -153,6 +238,7 @@ Let's Roll!
             firstRoll = 0;
             return;
         }
+
         rollCount = 2;
     }
 
@@ -161,14 +247,11 @@ Let's Roll!
         currentFrame.SecondRoll = roll;
         scoreCard.Rolls.Add(roll);
 
-        if (currentFrame.FirstRoll + currentFrame.SecondRoll < 10)
-        {
-            scoreCard.FrameScores[activeFrame - 1] = currentFrame.FirstRoll + currentFrame.SecondRoll;
-        }
+        int frameScore = currentFrame.FirstRoll + currentFrame.SecondRoll;
+        scoreCard.FrameScores[activeFrame - 1] = frameScore;
 
-        if (currentFrame.FirstRoll + currentFrame.SecondRoll == 10)
+        if (frameScore == 10)
         {
-            scoreCard.FrameScores[activeFrame - 1] = 10;
             currentFrame.IsSpare = true;
         }
 

@@ -7,6 +7,8 @@
         public List<int> Rolls { get; set; }
         public int TotalScore { get; set; }
 
+        public bool GameOver { get; set; } = false;
+
         public ScoreCard()
         {
             Frames = new List<Frame>();
