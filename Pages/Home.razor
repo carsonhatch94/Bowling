@@ -86,9 +86,29 @@ Let's Roll!
         <div class="score-number">10</div>
         <div class="score-square">
             <div class="roll-container">
-                <div class="roll-1-score">@((scoreCard.Frames[9].FirstRoll == -1) ? "" : scoreCard.Frames[9].FirstRoll.ToString())</div>
-                <div class="roll-2-score">@((scoreCard.Frames[9].SecondRoll == -1) ? "" : scoreCard.Frames[9].SecondRoll.ToString())</div>
-                <div class="roll-3-score">@((scoreCard.Frames[9].ThirdRoll == -1) ? "" : scoreCard.Frames[9].ThirdRoll.ToString())</div>
+                <div class="roll-1-score">@((scoreCard.Frames[9].FirstRoll == 10) ? "X" : (scoreCard.Frames[9].FirstRoll == -1) ? "" : scoreCard.Frames[9].FirstRoll.ToString())</div>
+                <div class="roll-2-score">
+                    @(
+                        scoreCard.Frames[9].SecondRoll switch
+                        {
+                            -1 => "",
+                            10 when scoreCard.Frames[9].FirstRoll == 10 => "X",
+                            _ when scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10 => "/",
+                            _ => scoreCard.Frames[9].SecondRoll.ToString()
+                        }
+                        )
+                </div>
+                <div class="roll-3-score">
+                    @(
+                        scoreCard.Frames[9].ThirdRoll switch
+                        {
+                            -1 => "",
+                            10 when scoreCard.Frames[9].SecondRoll == 10 || scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10 => "X",
+                            _ when scoreCard.Frames[9].SecondRoll + scoreCard.Frames[9].ThirdRoll == 10 => "/",
+                            _ => scoreCard.Frames[9].ThirdRoll.ToString()
+                        }
+                        )
+                </div>
             </div>
             <div class="frame-10-score">@((scoreCard.GameOver) ? scoreCard.TotalScore : "")</div>
         </div>
@@ -147,6 +167,14 @@ Let's Roll!
     {
         if (activeFrame == 10)
         {
+            if (scoreCard.Frames[9].FirstRoll == 10 && rollCount == 2)
+            {
+                return false;
+            }
+            if (rollCount == 3)
+            {
+                return 10 - scoreCard.Frames[9].SecondRoll < buttonValue;
+            }
             if (rollCount != 3)
             {
                 return 10 - scoreCard.Frames[9].FirstRoll < buttonValue;

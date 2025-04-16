@@ -10,14 +10,34 @@
 
     [Parameter]
     public Func<int, int> GetRunningTotal { get; set; }
+
+    private string FormatRoll(int roll, bool isSecondRoll = false)
+    {
+        if (roll == 10)
+        {
+            return "X";
+        }
+        else if (roll == -1)
+        {
+            return "";
+        }
+        else if (isSecondRoll && Frame.FirstRoll + Frame.SecondRoll == 10)
+        {
+            return "/";
+        }
+        else
+        {
+            return roll.ToString();
+        }
+    }
 }
 
 <div class="frame">
     <div class="score-number">@FrameNumber</div>
     <div class="score-square">
         <div class="roll-container">
-            <div class="roll-1-score">@((Frame.FirstRoll == -1) ? "" : Frame.FirstRoll.ToString())</div>
-            <div class="roll-2-score">@((Frame.SecondRoll == -1) ? "" : Frame.SecondRoll.ToString())</div>
+            <div class="roll-1-score">@FormatRoll(Frame.FirstRoll)</div>
+            <div class="roll-2-score">@FormatRoll(Frame.SecondRoll, true)</div>
         </div>
         <div class="frame-@FrameNumber-score">@((ActiveFrame >= FrameNumber + 1) ? GetRunningTotal(FrameNumber) : "")</div>
     </div>
