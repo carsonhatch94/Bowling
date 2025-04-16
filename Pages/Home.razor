@@ -167,18 +167,23 @@ Let's Roll!
     {
         if (activeFrame == 10)
         {
-            if (scoreCard.Frames[9].FirstRoll == 10 && rollCount == 2)
+            if (rollCount == 2 && scoreCard.Frames[9].FirstRoll == 10)
             {
                 return false;
             }
+
             if (rollCount == 3)
             {
+                if ((scoreCard.Frames[9].FirstRoll == 10 && scoreCard.Frames[9].SecondRoll == 10) ||
+                    (scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10))
+                {
+                    return false;
+                }
+
                 return 10 - scoreCard.Frames[9].SecondRoll < buttonValue;
             }
-            if (rollCount != 3)
-            {
-                return 10 - scoreCard.Frames[9].FirstRoll < buttonValue;
-            }
+
+            return 10 - scoreCard.Frames[9].FirstRoll < buttonValue;
         }
 
         return 10 - firstRoll < buttonValue;
