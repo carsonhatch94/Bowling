@@ -97,7 +97,7 @@
                         {
                             -1 => "",
                             10 when scoreCard.Frames[9].FirstRoll == 10 => "X",
-                            _ when scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10 => "/",
+                            _ when scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10 && scoreCard.Frames[9].SecondRoll != 0 => "/",
                             _ => scoreCard.Frames[9].SecondRoll.ToString()
                         }
                         )
@@ -108,7 +108,7 @@
                         {
                             -1 => "",
                             10 when scoreCard.Frames[9].SecondRoll == 10 || scoreCard.Frames[9].FirstRoll + scoreCard.Frames[9].SecondRoll == 10 => "X",
-                            _ when scoreCard.Frames[9].SecondRoll + scoreCard.Frames[9].ThirdRoll == 10 => "/",
+                            _ when scoreCard.Frames[9].FirstRoll == 10 && scoreCard.Frames[9].SecondRoll + scoreCard.Frames[9].ThirdRoll == 10 => "/",
                             _ => scoreCard.Frames[9].ThirdRoll.ToString()
                         }
                         )
