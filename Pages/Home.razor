@@ -62,6 +62,10 @@
         display: flex;
         justify-content: space-between;
     }
+
+    h2 {
+        font-size: 24px;
+    }
 </style>
 
 <div class="title">
@@ -69,7 +73,7 @@
     <button class="reset" @onclick="RefreshPage">Reset Game</button>
 </div>
 
-Let's Roll!
+<h2>Let's Roll!</h2>
 
 <div class="score-container">
     <FrameComponent FrameNumber="1" Frame="scoreCard.Frames[0]" ActiveFrame="activeFrame" GetRunningTotal="GetRunningTotal" />
